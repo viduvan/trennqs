@@ -64,12 +64,12 @@ test('desktop discovery shows the full region story without an inner scrollbar',
   assert.match(desktopCss, /\.region-controls\s*\{[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/);
   assert.match(desktopCss, /\.story-facts\s*\{[^}]*grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/);
   assert.match(desktopCss, /\.map-scene\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1\.9fr\)\s*minmax\(360px,\s*1\.1fr\)/);
-  assert.match(desktopCss, /\.story-summary\s*\{[^}]*font-size:\s*0\.875rem/);
-  assert.match(desktopCss, /\.mission-card \.story-title\s*\{[^}]*font-size:\s*1\.5rem/);
-  assert.match(desktopCss, /\.story-facts li\s*\{[^}]*font-size:\s*0\.8125rem/);
-  assert.match(desktopCss, /\.history-connection\s*\{[^}]*font-size:\s*0\.8125rem/);
+  assert.match(desktopCss, /\.story-summary\s*\{[^}]*font-size:\s*0\.9375rem/);
+  assert.match(desktopCss, /\.mission-card \.story-title\s*\{[^}]*font-size:\s*1\.625rem/);
+  assert.match(desktopCss, /\.story-facts li\s*\{[^}]*font-size:\s*0\.875rem/);
+  assert.match(desktopCss, /\.history-connection\s*\{[^}]*font-size:\s*0\.875rem/);
   assert.match(desktopCss, /\.mission-card:has\(\.region-button\[aria-pressed="true"\]\) \.mission-hint\s*\{[^}]*display:\s*none/);
-  assert.match(css, /@media\s*\(min-width:\s*1500px\)\s*and\s*\(min-height:\s*900px\)[\s\S]*?\.journey-stage\s*\{[^}]*width:\s*min\(1420px,[^}]*[\s\S]*?\.mission-card \.story-title\s*\{[^}]*font-size:\s*2rem[\s\S]*?\.story-summary\s*\{[^}]*font-size:\s*1\.1rem[\s\S]*?\.story-facts li\s*\{[^}]*font-size:\s*1rem[\s\S]*?\.history-connection\s*\{[^}]*font-size:\s*1rem/);
+  assert.match(css, /@media\s*\(min-width:\s*1500px\)\s*and\s*\(min-height:\s*900px\)[\s\S]*?\.journey-stage\s*\{[^}]*width:\s*min\(1420px,[^}]*[\s\S]*?\.mission-card \.story-title\s*\{[^}]*font-size:\s*2\.35rem[\s\S]*?\.story-summary\s*\{[^}]*font-size:\s*1\.25rem[\s\S]*?\.story-facts li\s*\{[^}]*font-size:\s*1\.125rem[\s\S]*?\.history-connection\s*\{[^}]*font-size:\s*1\.125rem/);
 });
 
 test('four exact knowledge pairs work in either selection order', () => {
@@ -181,7 +181,8 @@ test('stylesheet provides accessible responsive motion contracts', async () => {
   assert.match(css, /@media[^\{]*max-width\s*:\s*\d+px/);
   assert.match(css, /overflow-x\s*:\s*auto/);
   assert.match(css, /\[hidden\]\s*\{[^}]*display\s*:\s*none\s*!important/s);
-  assert.match(css, /\.matching-stage::before\s*\{\s*inset:\s*30px 0;/);
+  assert.match(css, /\.matching-stage\s*\{[^}]*padding-bottom:\s*clamp\(96px,\s*10vw,\s*148px\)/);
+  assert.match(css, /\.matching-stage::before\s*\{[\s\S]*?inset:\s*40px -20px 0;/);
   assert.match(css, /\.discovery-stage\s*\{[^}]*padding-top/s);
   assert.match(css, /\.map-scene\s*\{[^}]*grid-template-columns/s);
   assert.match(css, /\.region-reveal\.is-empty\s*\{[^}]*display\s*:\s*none/s);
