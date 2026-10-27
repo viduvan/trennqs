@@ -117,12 +117,14 @@ function setupGame(playSound) {
     if (!selected) {
       selected = card;
       card.classList.add('is-selected');
-      setFeedback(feedback, 'Đã chọn thẻ thứ nhất. Hãy tìm thẻ phù hợp ở nhóm còn lại.');
+      card.setAttribute('aria-pressed', 'true');
+      setFeedback(feedback, `Đã chọn “${card.textContent.trim()}”. Hãy tìm thẻ phù hợp ở nhóm còn lại.`);
       return;
     }
 
     if (selected === card) {
       card.classList.remove('is-selected');
+      card.setAttribute('aria-pressed', 'false');
       selected = null;
       setFeedback(feedback, 'Đã bỏ chọn. Hãy chọn một thẻ để bắt đầu.');
       return;
@@ -131,14 +133,17 @@ function setupGame(playSound) {
     const sameColumn = selected.classList.contains('source-card') === card.classList.contains('source-card');
     if (sameColumn) {
       selected.classList.remove('is-selected');
+      selected.setAttribute('aria-pressed', 'false');
       selected = card;
       card.classList.add('is-selected');
+      card.setAttribute('aria-pressed', 'true');
       setFeedback(feedback, 'Đã đổi thẻ lựa chọn. Bây giờ hãy chọn một thẻ ở nhóm còn lại.');
       return;
     }
 
     if (evaluateMatch(selected.dataset.cardId, card.dataset.cardId)) {
       selected.classList.remove('is-selected');
+      selected.setAttribute('aria-pressed', 'false');
       for (const matched of [selected, card]) {
         matched.classList.add('is-matched');
         matched.disabled = true;
@@ -158,6 +163,7 @@ function setupGame(playSound) {
 
     const first = selected;
     first.classList.remove('is-selected');
+    first.setAttribute('aria-pressed', 'false');
     first.classList.add('is-wrong');
     card.classList.add('is-wrong');
     playSound(false);
@@ -178,6 +184,7 @@ function setupGame(playSound) {
       card.disabled = false;
       card.classList.remove('is-matched');
       card.removeAttribute('aria-label');
+      card.setAttribute('aria-pressed', 'false');
     });
     counter.textContent = '0';
     setFeedback(feedback, 'Hãy chọn hai thẻ để tạo một cặp.');

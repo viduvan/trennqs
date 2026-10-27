@@ -23,6 +23,7 @@ test('bản đồ gốc và đúng hai nút khu vực xuất hiện', async () =
 test('trò ghép công bố đúng tám thẻ và câu hỏi có ba phương án', async () => {
   const html = await readFile(htmlPath, 'utf8');
   assert.equal((html.match(/data-card-id=/g) ?? []).length, 8);
+  assert.equal((html.match(/class="match-card[^>]+aria-pressed="false"/g) ?? []).length, 8);
   assert.equal((html.match(/name="answer"/g) ?? []).length, 3);
   assert.match(html, /Vì sao các nền văn minh Ai Cập và Lưỡng Hà sớm hình thành bên những dòng sông lớn\?/);
 });
