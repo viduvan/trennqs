@@ -44,6 +44,20 @@ test('nested endpoint uses relative local assets', async () => {
   assert.doesNotMatch(html, /(?:src|href)="\//);
 });
 
+test('desktop discovery keeps region details inside its single mission component', async () => {
+  const html = await readFile(questHtmlUrl, 'utf8');
+  const missionStart = html.indexOf('<aside class="mission-card"');
+  const missionEnd = html.indexOf('</aside>', missionStart);
+  const regionInfo = html.indexOf('id="region-info"');
+  assert.ok(missionStart >= 0 && missionEnd > missionStart);
+  assert.ok(regionInfo > missionStart && regionInfo < missionEnd);
+
+  const css = await readFile(new URL('../dist/hanh-trinh-hai-dong-song/styles.css', import.meta.url), 'utf8');
+  assert.match(css, /@media\s*\(min-width:\s*981px\)[\s\S]*?\.discovery-stage\s*\{[^}]*height:\s*calc\(100svh\s*-\s*78px\)/);
+  assert.match(css, /\.mission-card\s*\{[^}]*overflow-y:\s*auto/s);
+  assert.match(css, /\.map-window\s*\{[^}]*height:\s*100%/s);
+});
+
 test('four exact knowledge pairs work in either selection order', () => {
   assert.deepEqual(PAIR_MAP, {
     nile: 'egypt',
