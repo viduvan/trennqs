@@ -402,7 +402,7 @@ h1, .stage-intro > h2, .stage-intro-split h2 { margin-bottom: 14px; font-size: c
     height: 100%;
     min-height: 0;
     padding: clamp(18px, 2.4vh, 26px);
-    transform: translateZ(45px) rotate(0.6deg);
+    transform: none;
     overscroll-behavior: contain;
   }
 

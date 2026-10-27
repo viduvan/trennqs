@@ -53,9 +53,13 @@ test('desktop discovery keeps region details inside its single mission component
   assert.ok(regionInfo > missionStart && regionInfo < missionEnd);
 
   const css = await readFile(new URL('../dist/hanh-trinh-hai-dong-song/styles.css', import.meta.url), 'utf8');
-  assert.match(css, /@media\s*\(min-width:\s*981px\)[\s\S]*?\.discovery-stage\s*\{[^}]*height:\s*calc\(100svh\s*-\s*78px\)/);
+  const desktopStart = css.indexOf('@media (min-width: 981px)');
+  const desktopEnd = css.indexOf('@media (max-width: 980px)', desktopStart);
+  const desktopCss = css.slice(desktopStart, desktopEnd);
+  assert.match(desktopCss, /\.discovery-stage\s*\{[^}]*height:\s*calc\(100svh\s*-\s*78px\)/);
   assert.match(css, /\.mission-card\s*\{[^}]*overflow-y:\s*auto/s);
   assert.match(css, /\.map-window\s*\{[^}]*height:\s*100%/s);
+  assert.match(desktopCss, /\.mission-card\s*\{[^}]*transform:\s*none/);
 });
 
 test('four exact knowledge pairs work in either selection order', () => {
