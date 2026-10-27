@@ -34,6 +34,7 @@ test('river quest exposes exactly three journey stages', async () => {
   assert.equal((html.match(/data-card-id=/g) ?? []).length, 8);
   assert.equal((html.match(/name="answer"/g) ?? []).length, 3);
   assert.match(html, /id="sound-toggle"/);
+  assert.doesNotMatch(html, /Trên điện thoại/);
 });
 
 test('nested endpoint uses relative local assets', async () => {
@@ -44,7 +45,7 @@ test('nested endpoint uses relative local assets', async () => {
   assert.doesNotMatch(html, /(?:src|href)="\//);
 });
 
-test('desktop discovery keeps region details inside its single mission component', async () => {
+test('desktop discovery shows the full region story without an inner scrollbar', async () => {
   const html = await readFile(questHtmlUrl, 'utf8');
   const missionStart = html.indexOf('<aside class="mission-card"');
   const missionEnd = html.indexOf('</aside>', missionStart);
@@ -57,9 +58,13 @@ test('desktop discovery keeps region details inside its single mission component
   const desktopEnd = css.indexOf('@media (max-width: 980px)', desktopStart);
   const desktopCss = css.slice(desktopStart, desktopEnd);
   assert.match(desktopCss, /\.discovery-stage\s*\{[^}]*height:\s*calc\(100svh\s*-\s*78px\)/);
-  assert.match(css, /\.mission-card\s*\{[^}]*overflow-y:\s*auto/s);
+  assert.match(desktopCss, /\.mission-card\s*\{[^}]*overflow-y:\s*visible/);
   assert.match(css, /\.map-window\s*\{[^}]*height:\s*100%/s);
   assert.match(desktopCss, /\.mission-card\s*\{[^}]*transform:\s*none/);
+  assert.match(desktopCss, /\.region-controls\s*\{[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/);
+  assert.match(desktopCss, /\.story-facts\s*\{[^}]*grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/);
+  assert.match(desktopCss, /\.map-scene\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1\.9fr\)\s*minmax\(360px,\s*1\.1fr\)/);
+  assert.match(css, /@media\s*\(min-width:\s*1500px\)\s*and\s*\(min-height:\s*900px\)[\s\S]*?\.journey-stage\s*\{[^}]*width:\s*min\(1420px,[^}]*[\s\S]*?\.story-summary\s*\{[^}]*font-size:\s*0\.88rem/);
 });
 
 test('four exact knowledge pairs work in either selection order', () => {

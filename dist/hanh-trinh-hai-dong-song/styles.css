@@ -392,7 +392,13 @@ h1, .stage-intro > h2, .stage-intro-split h2 { margin-bottom: 14px; font-size: c
   }
 
   .discovery-stage .stage-intro { margin-bottom: clamp(12px, 1.8vh, 20px); }
-  .map-scene { height: 100%; min-height: 0; align-items: stretch; }
+  .map-scene {
+    grid-template-columns: minmax(0, 1.9fr) minmax(360px, 1.1fr);
+    height: 100%;
+    min-height: 0;
+    align-items: stretch;
+  }
+  .map-depth-layer { right: calc(36.67% + 24px); }
   .map-window { height: 100%; min-height: 0; }
   .map-scroll { display: grid; flex: 1; min-height: 0; place-items: center; }
   .map-scroll img { width: 100%; height: 100%; object-fit: contain; }
@@ -401,21 +407,48 @@ h1, .stage-intro > h2, .stage-intro-split h2 { margin-bottom: 14px; font-size: c
     align-self: stretch;
     height: 100%;
     min-height: 0;
-    padding: clamp(18px, 2.4vh, 26px);
+    overflow-y: visible;
+    padding: clamp(13px, 1.8vh, 18px);
     transform: none;
     overscroll-behavior: contain;
   }
 
-  .mission-card h2 { margin-bottom: 14px; font-size: 1.4rem; }
+  .mission-label { margin-bottom: 4px; font-size: 0.65rem; }
+  .mission-card h2 { margin-bottom: 9px; font-size: 1.16rem; }
+  .region-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; }
+  .region-button { min-height: 42px; gap: 8px; padding: 6px 8px; border-radius: 13px; font-size: 0.82rem; }
+  .region-index { flex-basis: 27px; width: 27px; height: 27px; }
+  .mission-hint { margin-top: 8px; font-size: 0.7rem; line-height: 1.35; }
+  .region-reveal { width: 100%; min-height: 0; margin: 10px 0 0; padding: 11px 12px; border-left-width: 4px; box-shadow: none; }
+  .story-heading { gap: 8px; }
+  .story-kicker { margin-bottom: 3px; font-size: 0.62rem; }
+  .story-title { margin-bottom: 4px; font-size: 1.25rem; }
+  .close-button { min-height: 34px; padding: 6px 10px; border-radius: 10px; font-size: 0.72rem; }
+  .story-summary { margin-block: 5px; font-size: 0.75rem; line-height: 1.38; }
+  .story-facts { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin-block: 7px; }
+  .story-facts li { padding: 7px; border-radius: 10px; font-size: 0.66rem; line-height: 1.35; }
+  .story-facts li::before { margin-right: 4px; }
+  .history-connection { margin-top: 7px; padding: 8px 10px; border-radius: 11px; font-size: 0.69rem; line-height: 1.35; }
+  .history-connection p { margin-top: 3px; }
+}
+
+@media (min-width: 1500px) and (min-height: 900px) {
+  .journey-stage { width: min(1420px, calc(100% - 80px)); }
+  .mission-card { padding: 22px; }
+  .mission-label { margin-bottom: 6px; font-size: 0.72rem; }
+  .mission-card h2 { margin-bottom: 13px; font-size: 1.4rem; }
   .region-controls { gap: 9px; }
-  .region-button { min-height: 48px; padding-block: 7px; }
-  .mission-hint { margin-top: 12px; }
-  .region-reveal { width: 100%; min-height: 0; margin: 18px 0 0; padding: 17px; box-shadow: none; }
+  .region-button { min-height: 48px; padding: 8px 11px; font-size: 0.9rem; }
+  .region-index { flex-basis: 30px; width: 30px; height: 30px; }
+  .mission-hint { margin-top: 11px; font-size: 0.78rem; }
+  .region-reveal { margin-top: 15px; padding: 16px 17px; }
+  .story-kicker { font-size: 0.68rem; }
   .story-title { font-size: 1.55rem; }
+  .close-button { min-height: 38px; padding: 7px 12px; font-size: 0.78rem; }
   .story-summary { margin-block: 8px; font-size: 0.88rem; }
-  .story-facts { grid-template-columns: 1fr; gap: 7px; margin-block: 10px; }
-  .story-facts li { padding: 9px 11px; font-size: 0.8rem; }
-  .history-connection { margin-top: 10px; padding: 12px 14px; font-size: 0.82rem; }
+  .story-facts { gap: 8px; margin-block: 10px; }
+  .story-facts li { padding: 10px; font-size: 0.76rem; }
+  .history-connection { margin-top: 10px; padding: 12px 14px; font-size: 0.8rem; }
 }
 
 @media (max-width: 980px) {
