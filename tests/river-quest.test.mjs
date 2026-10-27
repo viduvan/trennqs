@@ -72,6 +72,24 @@ test('desktop discovery shows the full region story without an inner scrollbar',
   assert.match(css, /@media\s*\(min-width:\s*1500px\)\s*and\s*\(min-height:\s*900px\)[\s\S]*?\.journey-stage\s*\{[^}]*width:\s*min\(1420px,[^}]*[\s\S]*?\.mission-card \.story-title\s*\{[^}]*font-size:\s*2\.35rem[\s\S]*?\.story-summary\s*\{[^}]*font-size:\s*1\.25rem[\s\S]*?\.story-facts li\s*\{[^}]*font-size:\s*1\.125rem[\s\S]*?\.history-connection\s*\{[^}]*font-size:\s*1\.125rem/);
 });
 
+test('desktop final challenge keeps the answer and conclusion in one viewport panel', async () => {
+  const html = await readFile(questHtmlUrl, 'utf8');
+  const panelStart = html.indexOf('<div class="question-panel">');
+  const conclusionStart = html.indexOf('<div class="conclusion"');
+  const panelEnd = html.indexOf('</div>\n      </div>\n    </section>', panelStart);
+  assert.ok(panelStart >= 0 && conclusionStart > panelStart && panelEnd > conclusionStart);
+
+  const css = await readFile(new URL('../dist/hanh-trinh-hai-dong-song/styles.css', import.meta.url), 'utf8');
+  const desktopStart = css.indexOf('@media (min-width: 981px)');
+  const desktopEnd = css.indexOf('@media (min-width: 1500px)', desktopStart);
+  const desktopCss = css.slice(desktopStart, desktopEnd);
+  assert.match(desktopCss, /\.explanation-stage\s*\{[^}]*height:\s*calc\(100svh\s*-\s*78px\)[^}]*overflow:\s*hidden/s);
+  assert.match(desktopCss, /\.explanation-stage \.stage-intro\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)\s*minmax\(360px,\s*0\.75fr\)/s);
+  assert.match(desktopCss, /\.question-panel\s*\{[^}]*padding:\s*clamp\(18px,\s*2\.6vh,\s*26px\)/s);
+  assert.match(desktopCss, /\.conclusion\s*\{[^}]*max-width:\s*none[^}]*margin:\s*10px 0 0[^}]*padding:\s*12px 16px/s);
+  assert.match(desktopCss, /\.journey-footer\s*\{[^}]*display:\s*none/);
+});
+
 test('four exact knowledge pairs work in either selection order', () => {
   assert.deepEqual(PAIR_MAP, {
     nile: 'egypt',
