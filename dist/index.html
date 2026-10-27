@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Hoạt động học tập tương tác về các dòng sông và văn minh Ai Cập, Lưỡng Hà cổ đại dành cho học sinh THCS.">
+  <title>Tặng phẩm của những dòng sông</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#kham-pha">Bỏ qua điều hướng</a>
+  <header class="topbar">
+    <nav class="step-nav" aria-label="Điều hướng hoạt động">
+      <a class="nav-step is-active" href="#kham-pha" data-nav="kham-pha"><span>01</span>Khám phá</a>
+      <a class="nav-step" href="#ghep-doi" data-nav="ghep-doi"><span>02</span>Ghép đúng</a>
+      <a class="nav-step" href="#thu-thach" data-nav="thu-thach"><span>03</span>Thử thách</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="learning-section map-section" id="kham-pha" aria-labelledby="map-heading">
+      <div class="section-heading">
+        <p class="eyebrow">Phần 1 · Quan sát và khám phá</p>
+        <h2 id="map-heading">Dòng sông mở lối cho văn minh</h2>
+        <p>Quan sát bản đồ, rồi chọn một khu vực để tìm hiểu thiên nhiên đã hỗ trợ đời sống cư dân cổ đại như thế nào.</p>
+      </div>
+
+      <div class="map-layout">
+        <figure class="map-frame">
+          <img src="assets/ban-do-ai-cap-luong-ha.png" alt="Bản đồ lịch sử khu vực Ai Cập và Lưỡng Hà cổ đại, giữ nguyên chú giải và ký hiệu gốc" width="920" height="690">
+          <figcaption>Bản đồ gốc được giữ nguyên. Có thể cuộn ngang để quan sát trên màn hình nhỏ.</figcaption>
+        </figure>
+
+        <aside class="explore-panel" aria-label="Thông tin khu vực">
+          <p class="panel-label">Chọn khu vực</p>
+          <div class="region-buttons" role="group" aria-label="Hai khu vực lịch sử">
+            <button class="region-button" type="button" data-region="egypt" aria-pressed="false">AI CẬP</button>
+            <button class="region-button" type="button" data-region="mesopotamia" aria-pressed="false">LƯỠNG HÀ</button>
+          </div>
+
+          <div class="region-info is-empty" id="region-info" aria-live="polite">
+            <div class="empty-state">
+              <span class="river-mark" aria-hidden="true"></span>
+              <h3>Bắt đầu từ một dòng sông</h3>
+              <p>Chọn <strong>Ai Cập</strong> hoặc <strong>Lưỡng Hà</strong> để mở bảng thông tin.</p>
+            </div>
+            <article class="region-article" hidden>
+              <div class="region-title-row">
+                <div>
+                  <p class="region-kicker"></p>
+                  <h3 class="region-title"></h3>
+                </div>
+                <button class="icon-button" id="close-region" type="button" aria-label="Đóng bảng thông tin">×</button>
+              </div>
+              <p class="region-summary"></p>
+              <ul class="fact-list"></ul>
+              <div class="connection-note">
+                <strong>Mối liên hệ</strong>
+                <p class="region-connection"></p>
+              </div>
+            </article>
+          </div>
+          <p class="observe-tip"><strong>Gợi ý quan sát:</strong> nguồn nước · phù sa · đất đai · đường đi lại</p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="learning-section game-section" id="ghep-doi" aria-labelledby="game-heading">
+      <div class="section-heading section-heading-row">
+        <div>
+          <p class="eyebrow">Phần 2 · Trò chơi ghép đôi</p>
+          <h2 id="game-heading">Ghép đúng – Hiểu nhanh</h2>
+          <p>Chọn một thẻ màu cát, rồi chọn thẻ màu xanh có ý nghĩa phù hợp.</p>
+        </div>
+        <div class="counter" aria-live="polite"><strong id="match-count">0</strong><span>/ 4 cặp</span></div>
+      </div>
+
+      <div class="game-board" aria-describedby="game-feedback">
+        <div class="card-column" aria-label="Nhóm khái niệm">
+          <p class="column-label">Khái niệm</p>
+          <button type="button" class="match-card source-card" data-card-id="nile">Sông Nin</button>
+          <button type="button" class="match-card source-card" data-card-id="tigris-euphrates">Sông Ti-grơ và sông Ơ-phơ-rát</button>
+          <button type="button" class="match-card source-card" data-card-id="water-silt">Phù sa và nguồn nước</button>
+          <button type="button" class="match-card source-card" data-card-id="rivers">Sông ngòi</button>
+        </div>
+        <div class="card-column" aria-label="Nhóm ý nghĩa">
+          <p class="column-label">Ý nghĩa</p>
+          <button type="button" class="match-card target-card" data-card-id="transport">Hỗ trợ giao thông và buôn bán</button>
+          <button type="button" class="match-card target-card" data-card-id="egypt">Ai Cập</button>
+          <button type="button" class="match-card target-card" data-card-id="farming">Thuận lợi cho trồng trọt</button>
+          <button type="button" class="match-card target-card" data-card-id="mesopotamia">Lưỡng Hà</button>
+        </div>
+      </div>
+
+      <div class="game-footer">
+        <p class="feedback neutral" id="game-feedback" aria-live="polite">Hãy chọn hai thẻ để tạo một cặp.</p>
+        <button class="secondary-button" id="reset-game" type="button">Chơi lại</button>
+      </div>
+    </section>
+
+    <section class="learning-section quiz-section" id="thu-thach" aria-labelledby="quiz-heading">
+      <div class="section-heading">
+        <p class="eyebrow">Phần 3 · Thử thách cuối</p>
+        <h2 id="quiz-heading">Em là nhà sử học</h2>
+        <p>Vận dụng điều vừa khám phá để giải thích bằng tư duy lịch sử.</p>
+      </div>
+
+      <div class="quiz-card">
+        <div class="quiz-number" aria-hidden="true">?</div>
+        <div class="quiz-content">
+          <h3>Vì sao các nền văn minh Ai Cập và Lưỡng Hà sớm hình thành bên những dòng sông lớn?</h3>
+          <fieldset id="answer-fieldset">
+            <legend class="visually-hidden">Chọn một đáp án</legend>
+            <label class="answer-option"><input type="radio" name="answer" value="A"><span class="answer-letter">A</span><span>Vì sông ngòi cung cấp nước, phù sa bồi đắp đất đai, tạo điều kiện phát triển nông nghiệp và giao thông.</span></label>
+            <label class="answer-option"><input type="radio" name="answer" value="B"><span class="answer-letter">B</span><span>Vì cư dân không cần lao động vẫn có đủ lương thực.</span></label>
+            <label class="answer-option"><input type="radio" name="answer" value="C"><span class="answer-letter">C</span><span>Vì sông ngòi không có ảnh hưởng đến đời sống.</span></label>
+          </fieldset>
+          <div class="quiz-actions">
+            <button class="primary-button" id="check-answer" type="button">Kiểm tra đáp án</button>
+            <button class="secondary-button" id="reset-quiz" type="button">Làm lại</button>
+          </div>
+          <p class="feedback neutral" id="quiz-feedback" aria-live="polite">Chọn một phương án rồi kiểm tra đáp án.</p>
+        </div>
+      </div>
+
+      <div class="conclusion" id="conclusion" hidden tabindex="-1">
+        <p class="conclusion-label">Kết luận</p>
+        <p>Nguồn nước, phù sa và đất đai thuận lợi giúp cư dân Ai Cập và Lưỡng Hà phát triển nông nghiệp, ổn định đời sống.</p>
+        <p>Kết hợp với hoạt động lao động của con người, những điều kiện ấy tạo cơ sở cho sự hình thành các nền văn minh cổ đại.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer><span aria-hidden="true"></span> Hoạt động học tập tương tác · Lịch sử THCS</footer>
+  <script type="module" src="app.mjs"></script>
+</body>
+</html>
