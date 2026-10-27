@@ -419,16 +419,17 @@ h1, .stage-intro > h2, .stage-intro-split h2 { margin-bottom: 14px; font-size: c
   .region-button { min-height: 42px; gap: 8px; padding: 6px 8px; border-radius: 13px; font-size: 0.82rem; }
   .region-index { flex-basis: 27px; width: 27px; height: 27px; }
   .mission-hint { margin-top: 8px; font-size: 0.7rem; line-height: 1.35; }
+  .mission-card:has(.region-button[aria-pressed="true"]) .mission-hint { display: none; }
   .region-reveal { width: 100%; min-height: 0; margin: 10px 0 0; padding: 11px 12px; border-left-width: 4px; box-shadow: none; }
   .story-heading { gap: 8px; }
-  .story-kicker { margin-bottom: 3px; font-size: 0.62rem; }
-  .story-title { margin-bottom: 4px; font-size: 1.25rem; }
+  .story-kicker { margin-bottom: 3px; font-size: 0.68rem; }
+  .mission-card .story-title { margin-bottom: 4px; font-size: 1.5rem; }
   .close-button { min-height: 34px; padding: 6px 10px; border-radius: 10px; font-size: 0.72rem; }
-  .story-summary { margin-block: 5px; font-size: 0.75rem; line-height: 1.38; }
+  .story-summary { margin-block: 6px; font-size: 0.875rem; line-height: 1.4; }
   .story-facts { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin-block: 7px; }
-  .story-facts li { padding: 7px; border-radius: 10px; font-size: 0.66rem; line-height: 1.35; }
+  .story-facts li { padding: 8px; border-radius: 10px; font-size: 0.8125rem; line-height: 1.4; }
   .story-facts li::before { margin-right: 4px; }
-  .history-connection { margin-top: 7px; padding: 8px 10px; border-radius: 11px; font-size: 0.69rem; line-height: 1.35; }
+  .history-connection { margin-top: 7px; padding: 9px 11px; border-radius: 11px; font-size: 0.8125rem; line-height: 1.4; }
   .history-connection p { margin-top: 3px; }
 }
 
@@ -442,13 +443,13 @@ h1, .stage-intro > h2, .stage-intro-split h2 { margin-bottom: 14px; font-size: c
   .region-index { flex-basis: 30px; width: 30px; height: 30px; }
   .mission-hint { margin-top: 11px; font-size: 0.78rem; }
   .region-reveal { margin-top: 15px; padding: 16px 17px; }
-  .story-kicker { font-size: 0.68rem; }
-  .story-title { font-size: 1.55rem; }
+  .story-kicker { font-size: 0.75rem; }
+  .mission-card .story-title { font-size: 2rem; }
   .close-button { min-height: 38px; padding: 7px 12px; font-size: 0.78rem; }
-  .story-summary { margin-block: 8px; font-size: 0.88rem; }
+  .story-summary { margin-block: 8px; font-size: 1.1rem; }
   .story-facts { gap: 8px; margin-block: 10px; }
-  .story-facts li { padding: 10px; font-size: 0.76rem; }
-  .history-connection { margin-top: 10px; padding: 12px 14px; font-size: 0.8rem; }
+  .story-facts li { padding: 11px; font-size: 1rem; }
+  .history-connection { margin-top: 10px; padding: 13px 15px; font-size: 1rem; }
 }
 
 @media (max-width: 980px) {
