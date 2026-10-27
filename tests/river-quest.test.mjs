@@ -10,6 +10,7 @@ import {
   evaluateAnswer,
   evaluateMatch,
   nextMatchState,
+  resolveActiveStage,
   scheduleSoundNotes
 } from '../dist/hanh-trinh-hai-dong-song/app.mjs';
 
@@ -129,6 +130,19 @@ test('pointer tilt is centered and clamped to three degrees', () => {
   assert.deepEqual(calculateTilt(10, 20, { left: 0, top: 0, width: 0, height: 0 }), { rotateX: 0, rotateY: 0 });
 });
 
+test('journey progress stays on the stage crossed by the navigation probe', () => {
+  const sections = [
+    { id: 'kham-pha', top: 78 },
+    { id: 'ket-noi', top: 1050 },
+    { id: 'giai-thich', top: 1900 }
+  ];
+  assert.equal(resolveActiveStage(sections, 79), 'kham-pha');
+  assert.equal(resolveActiveStage(sections, 900), 'kham-pha');
+  assert.equal(resolveActiveStage(sections, 1050), 'ket-noi');
+  assert.equal(resolveActiveStage(sections, 2200), 'giai-thich');
+  assert.equal(resolveActiveStage([], 100), null);
+});
+
 test('stylesheet provides accessible responsive motion contracts', async () => {
   const css = await readFile(new URL('../dist/hanh-trinh-hai-dong-song/styles.css', import.meta.url), 'utf8');
   assert.match(css, /perspective\s*:/);
@@ -140,4 +154,7 @@ test('stylesheet provides accessible responsive motion contracts', async () => {
   assert.match(css, /overflow-x\s*:\s*auto/);
   assert.match(css, /\[hidden\]\s*\{[^}]*display\s*:\s*none\s*!important/s);
   assert.match(css, /\.matching-stage::before\s*\{\s*inset:\s*30px 0;/);
+  assert.match(css, /\.discovery-stage\s*\{[^}]*padding-top/s);
+  assert.match(css, /\.map-scene\s*\{[^}]*grid-template-columns/s);
+  assert.match(css, /\.region-reveal\.is-empty\s*\{[^}]*display\s*:\s*none/s);
 });

@@ -36,6 +36,16 @@ export function calculateTilt(pointerX, pointerY, bounds) {
   };
 }
 
+export function resolveActiveStage(sections, probeY) {
+  if (!Array.isArray(sections) || sections.length === 0) return null;
+  let activeId = sections[0].id;
+  for (const section of sections) {
+    if (section.top > probeY) break;
+    activeId = section.id;
+  }
+  return activeId;
+}
+
 export function nextMatchState(state, firstId, secondId) {
   const completedIds = [...(state?.completedIds ?? [])];
   const selectedId = secondId === undefined ? state?.selectedId ?? null : firstId;
@@ -349,21 +359,40 @@ function setupQuiz(playSound) {
 }
 
 function setupNavigation() {
-  if (!('IntersectionObserver' in window)) return;
   const links = [...document.querySelectorAll('[data-nav]')];
   const sections = [...document.querySelectorAll('[data-stage]')];
-  const observer = new IntersectionObserver((entries) => {
-    const current = entries.filter((entry) => entry.isIntersecting)
-      .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-    if (!current) return;
+  const bar = document.querySelector('.journey-bar');
+  let frame = 0;
+
+  const setActive = (id) => {
     links.forEach((link) => {
-      const active = link.dataset.nav === current.target.id;
+      const active = link.dataset.nav === id;
       link.classList.toggle('is-current', active);
       if (active) link.setAttribute('aria-current', 'step');
       else link.removeAttribute('aria-current');
     });
-  }, { rootMargin: '-25% 0px -55%', threshold: [0, 0.2, 0.5] });
-  sections.forEach((section) => observer.observe(section));
+  };
+
+  const update = () => {
+    const positions = sections.map((section) => ({
+      id: section.id,
+      top: section.getBoundingClientRect().top + window.scrollY
+    }));
+    const probeY = window.scrollY + bar.offsetHeight + Math.min(72, window.innerHeight * 0.12);
+    setActive(resolveActiveStage(positions, probeY));
+    frame = 0;
+  };
+
+  const scheduleUpdate = () => {
+    if (frame) return;
+    frame = window.requestAnimationFrame(update);
+  };
+
+  links.forEach((link) => link.addEventListener('click', () => setActive(link.dataset.nav)));
+  window.addEventListener('scroll', scheduleUpdate, { passive: true });
+  window.addEventListener('resize', scheduleUpdate);
+  window.addEventListener('hashchange', scheduleUpdate);
+  update();
 }
 
 function setupMapTilt() {
