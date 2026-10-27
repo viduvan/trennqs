@@ -5,6 +5,7 @@ import { readFile } from 'node:fs/promises';
 import {
   PAIR_MAP,
   SOUND_PATTERNS,
+  calculateTilt,
   evaluateAnswer,
   evaluateMatch,
   nextMatchState,
@@ -104,4 +105,27 @@ test('muted sound state does not schedule notes', () => {
   assert.deepEqual(scheduled, []);
   assert.equal(scheduleSoundNotes('matchCorrect', true, (note) => scheduled.push(note)), 2);
   assert.equal(scheduled.length, 2);
+});
+
+test('pointer tilt is centered and clamped to three degrees', () => {
+  const bounds = { left: 100, top: 50, width: 800, height: 600 };
+  assert.deepEqual(calculateTilt(500, 350, bounds), { rotateX: 0, rotateY: 0 });
+  const topLeft = calculateTilt(-500, -500, bounds);
+  const bottomRight = calculateTilt(2000, 2000, bounds);
+  for (const tilt of [topLeft, bottomRight]) {
+    assert.ok(Math.abs(tilt.rotateX) <= 3);
+    assert.ok(Math.abs(tilt.rotateY) <= 3);
+  }
+  assert.deepEqual(calculateTilt(10, 20), { rotateX: 0, rotateY: 0 });
+  assert.deepEqual(calculateTilt(10, 20, { left: 0, top: 0, width: 0, height: 0 }), { rotateX: 0, rotateY: 0 });
+});
+
+test('stylesheet provides accessible responsive motion contracts', async () => {
+  const css = await readFile(new URL('../dist/hanh-trinh-hai-dong-song/styles.css', import.meta.url), 'utf8');
+  assert.match(css, /perspective\s*:/);
+  assert.match(css, /:focus-visible/);
+  assert.match(css, /prefers-reduced-motion\s*:\s*reduce/);
+  assert.match(css, /pointer\s*:\s*coarse/);
+  assert.match(css, /@media[^\{]*max-width\s*:\s*\d+px/);
+  assert.match(css, /overflow-x\s*:\s*auto/);
 });

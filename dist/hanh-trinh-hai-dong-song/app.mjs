@@ -19,6 +19,23 @@ export function evaluateAnswer(value) {
   return { correct: false, kind: 'empty' };
 }
 
+export function calculateTilt(pointerX, pointerY, bounds) {
+  if (!bounds || !Number.isFinite(bounds.width) || !Number.isFinite(bounds.height)
+    || bounds.width <= 0 || bounds.height <= 0) {
+    return { rotateX: 0, rotateY: 0 };
+  }
+  const normalizedX = ((pointerX - bounds.left) / bounds.width) * 2 - 1;
+  const normalizedY = ((pointerY - bounds.top) / bounds.height) * 2 - 1;
+  const clamp = (value) => {
+    const bounded = Math.max(-3, Math.min(3, value));
+    return Object.is(bounded, -0) ? 0 : bounded;
+  };
+  return {
+    rotateX: clamp(-normalizedY * 3),
+    rotateY: clamp(normalizedX * 3)
+  };
+}
+
 export function nextMatchState(state, firstId, secondId) {
   const completedIds = [...(state?.completedIds ?? [])];
   const selectedId = secondId === undefined ? state?.selectedId ?? null : firstId;
@@ -342,6 +359,26 @@ function setupNavigation() {
   sections.forEach((section) => observer.observe(section));
 }
 
+function setupMapTilt() {
+  const scene = document.querySelector('#map-scene');
+  if (!scene || !window.matchMedia('(hover: hover) and (pointer: fine)').matches
+    || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  let frame = 0;
+  scene.addEventListener('pointermove', (event) => {
+    if (frame) window.cancelAnimationFrame(frame);
+    frame = window.requestAnimationFrame(() => {
+      const tilt = calculateTilt(event.clientX, event.clientY, scene.getBoundingClientRect());
+      scene.style.setProperty('--tilt-x', `${tilt.rotateX.toFixed(2)}deg`);
+      scene.style.setProperty('--tilt-y', `${tilt.rotateY.toFixed(2)}deg`);
+      frame = 0;
+    });
+  });
+  scene.addEventListener('pointerleave', () => {
+    scene.style.setProperty('--tilt-x', '0deg');
+    scene.style.setProperty('--tilt-y', '0deg');
+  });
+}
+
 export function init() {
   const isSoundEnabled = setupSoundToggle();
   const playSound = createSoundPlayer(isSoundEnabled);
@@ -349,6 +386,7 @@ export function init() {
   setupMatching(playSound);
   setupQuiz(playSound);
   setupNavigation();
+  setupMapTilt();
 }
 
 if (typeof document !== 'undefined') {
