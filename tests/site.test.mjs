@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import { PAIR_MAP, evaluateMatch, evaluateAnswer } from '../dist/app.mjs';
+import { PAIR_MAP, SOUND_PATTERNS, evaluateMatch, evaluateAnswer } from '../dist/app.mjs';
 
 const htmlPath = new URL('../dist/index.html', import.meta.url);
 
@@ -43,4 +43,22 @@ test('logic trắc nghiệm xác định A đúng và B, C cần thử lại', (
   assert.deepEqual(evaluateAnswer('B'), { correct: false, kind: 'effort' });
   assert.deepEqual(evaluateAnswer('C'), { correct: false, kind: 'impact' });
   assert.deepEqual(evaluateAnswer(''), { correct: false, kind: 'empty' });
+});
+
+test('mỗi ngữ cảnh học tập có một mẫu âm thanh riêng, ngắn và an toàn', () => {
+  assert.deepEqual(Object.keys(SOUND_PATTERNS), [
+    'matchCorrect',
+    'matchComplete',
+    'matchWrong',
+    'quizCorrect',
+    'quizWrong'
+  ]);
+  for (const pattern of Object.values(SOUND_PATTERNS)) {
+    assert.ok(pattern.notes.length >= 2);
+    assert.ok(pattern.notes.every((note) => note.frequency > 0 && note.duration > 0));
+    assert.ok(pattern.notes.every((note) => note.duration <= 0.55));
+    assert.ok(pattern.volume <= 0.09);
+  }
+  assert.notDeepEqual(SOUND_PATTERNS.matchCorrect.notes, SOUND_PATTERNS.quizCorrect.notes);
+  assert.ok(SOUND_PATTERNS.matchComplete.notes.length > SOUND_PATTERNS.matchCorrect.notes.length);
 });

@@ -16,6 +16,49 @@ export function evaluateAnswer(value) {
   return { correct: false, kind: 'empty' };
 }
 
+// Các cao độ dựa trên âm giai ngũ cung để tạo cảm giác mộc, sáng và không quá “game”.
+export const SOUND_PATTERNS = Object.freeze({
+  matchCorrect: {
+    volume: 0.065,
+    notes: [
+      { frequency: 587.33, duration: 0.16, delay: 0, type: 'sine' },
+      { frequency: 880, duration: 0.24, delay: 0.11, type: 'triangle' }
+    ]
+  },
+  matchComplete: {
+    volume: 0.075,
+    notes: [
+      { frequency: 587.33, duration: 0.17, delay: 0, type: 'triangle' },
+      { frequency: 659.25, duration: 0.17, delay: 0.1, type: 'triangle' },
+      { frequency: 783.99, duration: 0.18, delay: 0.2, type: 'triangle' },
+      { frequency: 880, duration: 0.19, delay: 0.31, type: 'sine' },
+      { frequency: 1174.66, duration: 0.4, delay: 0.43, type: 'sine' }
+    ]
+  },
+  matchWrong: {
+    volume: 0.045,
+    notes: [
+      { frequency: 233.08, duration: 0.13, delay: 0, type: 'triangle' },
+      { frequency: 196, duration: 0.2, delay: 0.1, type: 'triangle' }
+    ]
+  },
+  quizCorrect: {
+    volume: 0.07,
+    notes: [
+      { frequency: 523.25, duration: 0.22, delay: 0, type: 'sine' },
+      { frequency: 783.99, duration: 0.25, delay: 0.13, type: 'sine' },
+      { frequency: 987.77, duration: 0.42, delay: 0.27, type: 'triangle' }
+    ]
+  },
+  quizWrong: {
+    volume: 0.04,
+    notes: [
+      { frequency: 261.63, duration: 0.16, delay: 0, type: 'sine' },
+      { frequency: 220, duration: 0.23, delay: 0.12, type: 'sine' }
+    ]
+  }
+});
+
 const REGIONS = Object.freeze({
   egypt: {
     kicker: 'Thung lũng sông Nin',
@@ -42,22 +85,38 @@ const REGIONS = Object.freeze({
 });
 
 function createSoundPlayer() {
-  return (success) => {
+  let context;
+  return (patternName) => {
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     if (!AudioContext) return;
-    const context = new AudioContext();
-    const oscillator = context.createOscillator();
-    const gain = context.createGain();
-    oscillator.type = success ? 'sine' : 'triangle';
-    oscillator.frequency.setValueAtTime(success ? 520 : 210, context.currentTime);
-    if (success) oscillator.frequency.exponentialRampToValueAtTime(740, context.currentTime + .13);
-    gain.gain.setValueAtTime(.0001, context.currentTime);
-    gain.gain.exponentialRampToValueAtTime(.075, context.currentTime + .015);
-    gain.gain.exponentialRampToValueAtTime(.0001, context.currentTime + .2);
-    oscillator.connect(gain).connect(context.destination);
-    oscillator.start();
-    oscillator.stop(context.currentTime + .21);
-    oscillator.addEventListener('ended', () => context.close());
+    const pattern = SOUND_PATTERNS[patternName];
+    if (!pattern) return;
+    context ||= new AudioContext();
+    if (context.state === 'suspended') void context.resume();
+
+    const master = context.createGain();
+    const filter = context.createBiquadFilter();
+    master.gain.setValueAtTime(pattern.volume, context.currentTime);
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(2400, context.currentTime);
+    filter.Q.setValueAtTime(1.2, context.currentTime);
+    master.connect(filter).connect(context.destination);
+
+    for (const note of pattern.notes) {
+      const start = context.currentTime + note.delay;
+      const end = start + note.duration;
+      const oscillator = context.createOscillator();
+      const envelope = context.createGain();
+      oscillator.type = note.type;
+      oscillator.frequency.setValueAtTime(note.frequency, start);
+      oscillator.detune.setValueAtTime(-3, start);
+      envelope.gain.setValueAtTime(0.0001, start);
+      envelope.gain.exponentialRampToValueAtTime(1, start + 0.018);
+      envelope.gain.exponentialRampToValueAtTime(0.0001, end);
+      oscillator.connect(envelope).connect(master);
+      oscillator.start(start);
+      oscillator.stop(end + 0.02);
+    }
   };
 }
 
@@ -151,7 +210,7 @@ function setupGame(playSound) {
       }
       completed += 1;
       counter.textContent = String(completed);
-      playSound(true);
+      playSound(completed === 4 ? 'matchComplete' : 'matchCorrect');
       setFeedback(
         feedback,
         completed === 4 ? 'Xuất sắc! Em đã ghép đúng cả 4 cặp kiến thức.' : `Chính xác! Em đã hoàn thành ${completed}/4 cặp.`,
@@ -166,7 +225,7 @@ function setupGame(playSound) {
     first.setAttribute('aria-pressed', 'false');
     first.classList.add('is-wrong');
     card.classList.add('is-wrong');
-    playSound(false);
+    playSound('matchWrong');
     setFeedback(feedback, 'Chưa đúng rồi. Em hãy quan sát mối liên hệ và thử lại nhé!', 'error');
     selected = null;
     window.setTimeout(() => {
@@ -218,14 +277,14 @@ function setupQuiz(playSound) {
       selectedLabel.classList.add('is-correct');
       setFeedback(feedback, 'Chính xác! Sông ngòi cung cấp nước, phù sa và đường giao thông — những điều kiện quan trọng để cư dân ổn định đời sống và phát triển.', 'success');
       conclusion.hidden = false;
-      playSound(true);
+      playSound('quizCorrect');
       conclusion.focus({ preventScroll: true });
       return;
     }
 
     selectedLabel.classList.add('is-wrong');
     conclusion.hidden = true;
-    playSound(false);
+    playSound('quizWrong');
     const message = result.kind === 'effort'
       ? 'Hãy nghĩ lại: điều kiện tự nhiên rất thuận lợi, nhưng lương thực vẫn cần sức lao động và sự tổ chức của con người.'
       : 'Hãy quan sát lại vai trò của nguồn nước, phù sa và đường đi lại đối với đời sống cư dân.';
