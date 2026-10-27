@@ -128,4 +128,6 @@ test('stylesheet provides accessible responsive motion contracts', async () => {
   assert.match(css, /pointer\s*:\s*coarse/);
   assert.match(css, /@media[^\{]*max-width\s*:\s*\d+px/);
   assert.match(css, /overflow-x\s*:\s*auto/);
+  assert.match(css, /\[hidden\]\s*\{[^}]*display\s*:\s*none\s*!important/s);
+  assert.match(css, /\.matching-stage::before\s*\{\s*inset:\s*30px 0;/);
 });
