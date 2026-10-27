@@ -145,38 +145,45 @@ const REGIONS = Object.freeze({
   })
 });
 
-function createSoundPlayer(isEnabled) {
+export function createSoundPlayer(isEnabled, audioWindow = typeof window === 'undefined' ? {} : window) {
   let context;
   return (patternName) => {
     if (!isEnabled()) return;
-    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    const AudioContextClass = audioWindow.AudioContext || audioWindow.webkitAudioContext;
     if (!AudioContextClass) return;
-    context ||= new AudioContextClass();
-    if (context.state === 'suspended') void context.resume();
+    try {
+      context ||= new AudioContextClass();
+      if (context.state === 'suspended') {
+        const resumeResult = context.resume();
+        if (resumeResult?.catch) void resumeResult.catch(() => {});
+      }
 
-    const master = context.createGain();
-    const filter = context.createBiquadFilter();
-    const pattern = SOUND_PATTERNS[patternName];
-    if (!pattern) return;
-    master.gain.setValueAtTime(pattern.volume, context.currentTime);
-    filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(2400, context.currentTime);
-    master.connect(filter).connect(context.destination);
+      const master = context.createGain();
+      const filter = context.createBiquadFilter();
+      const pattern = SOUND_PATTERNS[patternName];
+      if (!pattern) return;
+      master.gain.setValueAtTime(pattern.volume, context.currentTime);
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(2400, context.currentTime);
+      master.connect(filter).connect(context.destination);
 
-    scheduleSoundNotes(patternName, true, (note) => {
-      const start = context.currentTime + note.delay;
-      const end = start + note.duration;
-      const oscillator = context.createOscillator();
-      const envelope = context.createGain();
-      oscillator.type = note.type;
-      oscillator.frequency.setValueAtTime(note.frequency, start);
-      envelope.gain.setValueAtTime(0.0001, start);
-      envelope.gain.exponentialRampToValueAtTime(1, start + 0.018);
-      envelope.gain.exponentialRampToValueAtTime(0.0001, end);
-      oscillator.connect(envelope).connect(master);
-      oscillator.start(start);
-      oscillator.stop(end + 0.02);
-    });
+      scheduleSoundNotes(patternName, true, (note) => {
+        const start = context.currentTime + note.delay;
+        const end = start + note.duration;
+        const oscillator = context.createOscillator();
+        const envelope = context.createGain();
+        oscillator.type = note.type;
+        oscillator.frequency.setValueAtTime(note.frequency, start);
+        envelope.gain.setValueAtTime(0.0001, start);
+        envelope.gain.exponentialRampToValueAtTime(1, start + 0.018);
+        envelope.gain.exponentialRampToValueAtTime(0.0001, end);
+        oscillator.connect(envelope).connect(master);
+        oscillator.start(start);
+        oscillator.stop(end + 0.02);
+      });
+    } catch {
+      // Âm thanh là tăng cường tùy chọn; mọi hoạt động học tập vẫn phải tiếp tục.
+    }
   };
 }
 
@@ -374,6 +381,8 @@ function setupMapTilt() {
     });
   });
   scene.addEventListener('pointerleave', () => {
+    if (frame) window.cancelAnimationFrame(frame);
+    frame = 0;
     scene.style.setProperty('--tilt-x', '0deg');
     scene.style.setProperty('--tilt-y', '0deg');
   });

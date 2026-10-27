@@ -6,6 +6,7 @@ import {
   PAIR_MAP,
   SOUND_PATTERNS,
   calculateTilt,
+  createSoundPlayer,
   evaluateAnswer,
   evaluateMatch,
   nextMatchState,
@@ -107,6 +108,14 @@ test('muted sound state does not schedule notes', () => {
   assert.equal(scheduled.length, 2);
 });
 
+test('audio initialization failure is a silent no-op', () => {
+  class ThrowingAudioContext {
+    constructor() { throw new Error('audio unavailable'); }
+  }
+  const playSound = createSoundPlayer(() => true, { AudioContext: ThrowingAudioContext });
+  assert.doesNotThrow(() => playSound('matchCorrect'));
+});
+
 test('pointer tilt is centered and clamped to three degrees', () => {
   const bounds = { left: 100, top: 50, width: 800, height: 600 };
   assert.deepEqual(calculateTilt(500, 350, bounds), { rotateX: 0, rotateY: 0 });
@@ -124,6 +133,7 @@ test('stylesheet provides accessible responsive motion contracts', async () => {
   const css = await readFile(new URL('../dist/hanh-trinh-hai-dong-song/styles.css', import.meta.url), 'utf8');
   assert.match(css, /perspective\s*:/);
   assert.match(css, /:focus-visible/);
+  assert.match(css, /\.answer-option:has\(input:focus-visible\)/);
   assert.match(css, /prefers-reduced-motion\s*:\s*reduce/);
   assert.match(css, /pointer\s*:\s*coarse/);
   assert.match(css, /@media[^\{]*max-width\s*:\s*\d+px/);

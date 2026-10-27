@@ -338,6 +338,7 @@ h1, .stage-intro > h2, .stage-intro-split h2 { margin-bottom: 14px; font-size: c
 .question-panel fieldset { display: grid; gap: 13px; margin: 0; padding: 0; border: 0; }
 .answer-option { display: grid; grid-template-columns: 44px 1fr; align-items: center; gap: 15px; min-height: 68px; padding: 13px 17px; border: 1px solid rgba(96, 69, 47, 0.16); border-radius: 17px; background: var(--cream-50); cursor: pointer; transition: border-color 150ms ease, background-color 150ms ease, transform 150ms ease; }
 .answer-option:hover { border-color: var(--river-400); transform: translateX(3px); }
+.answer-option:has(input:focus-visible) { outline: 3px solid #e79b2f; outline-offset: 4px; }
 .answer-option:has(input:checked) { border-color: var(--river-600); background: var(--river-100); }
 .answer-option.is-correct { border-color: #69ad86; background: #e2f6e9; }
 .answer-option.is-wrong { border-color: #d17663; background: #fff0ec; }
